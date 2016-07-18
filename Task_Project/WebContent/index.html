@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Insert title here</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link rel="stylesheet"
+	href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+<link rel="stylesheet"
+	href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.6/themes/base/jquery-ui.css"
+	type="text/css" media="all" />
+<!-- <script
+	src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"
+	type="text/javascript"></script> -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+<script
+	src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.6/jquery-ui.min.js"
+	type="text/javascript"></script>
+<script
+	src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+</head>
+<style>
+#maindiv {
+	background-color: #f0f5f5;
+}
+
+#navdiv {
+	background-color: #e0ebeb;
+	padding:25px 40px;
+	margin:0 0 10px 0;
+}
+
+.divchild{
+	background-color: white;
+	border:1px solid #f0f5f5;
+	height:400px;
+	width:570px;
+	
+}
+</style>
+<body>
+	<div id="maindiv" class="container">
+		<div id="navdiv" class="jumbotron">
+			<h2>Task Tracker</h2>
+			<h4>V2.0</h4>
+		</div>
+		<div class="container">
+			<div class="row">
+				<div class="divchild col-xs-12 col-s-6 col-md-6 col-lg-6">
+					<h3 style="text-align: center;">Create a Task</h3>
+
+					<div class="form-group">
+						<label for="taskName">Task Name</label> <input type="text"
+							class="form-control" id="taskName">
+					</div>
+					<div class="form-group">
+						<label for="date">Date</label> <input type="text"
+							class="form-control" id="datePick">
+					</div>
+
+					<div class="form-group">
+						<label for="assignedTo">Assigned To</label> <input type="text"
+							class="form-control" id="assignedTo">
+					</div>
+
+					<button class="btn btn-info" type="Submit" value="Submit"
+						id="buttonSubmit">Submit</button>
+					<button class="btn btn-info"  value="Save"
+						id="save">Save</button>
+					<br>
+				</div>
+				<div id="datadiv" class="divchild table-responsive col-xs-12 col-sm-6 col-md-6 col-lg-6">
+	  				<h3 style="text-align: center;"> Existing Tasks</h3>
+	  			
+	  			</div>
+			</div>
+
+		</div>
+
+	</div>
+	<script>
+	$(document).ready(function(){
+		var dataArr;
+	$("#datePick").datepicker();
+	 $.get("data.json", function(data, status){
+		 dataArr=data;
+		// console.log("dataArr",dataArr,status);
+	      //  alert("Data: " + data + "\nStatus: " + status);
+	      loadData(dataArr)
+	    });
+	
+	/*  $("#buttonSubmit").click(function(){
+		 dataArr.name=$("#taskName").val();
+		 console.log('dataArr.name',dataArr.name)
+		 dataArr.date=$("#datePick").val();
+		 dataArr.assignedTo=$("#assignedTo").val();
+		 out="";
+		 out="<tr><td>"+$("#taskName").val()+"</td>";
+			out +="<td>"+	$("#datePick").val()+"</td>";
+			out +="<td>"+	$("#assignedTo").val()+"</td><td>";
+			out+="<a href='#' id='edit'><img height='15px' width='15px' src='https://cdn2.iconfinder.com/data/icons/windows-8-metro-style/128/edit_property.png'></a></td><td><a href='#' id='delete'><img height='15px' width='15px' src='http://vignette1.wikia.nocookie.net/shaiya/images/a/a4/Icon_Red_Cross.png/revision/latest?cb=20080319184825'></a></td></tr>";
+			$("table").append(out);
+			init();
+		 
+	 }); */
+	 
+	 $("#buttonSubmit").click(function(){
+
+         dataArr.push({'name':$("#taskName").val(),'date':$("#datePick").val(),'assignedTo':$("#assignedTo").val()});
+         console.log(dataArr);
+         loadData(dataArr);
+         var abc=$("showRecord").html();
+     console.log(abc);
+     $("#dataDivTable").html("");
+     var out = "<table class='showRecord table table-striped table-bordered'>";
+     out += "<thead><tr><th>Name</th><th>Date</th><th>Assigned To</th><th>Edit</th><th>Remove</th></tr></thead><tbody>";
+     for(i=0;i<arr.length-1;i++){
+         out+="<tr><td>"+arr[i].name+"</td><td>"+arr[i].date+"</td><td>"+arr[i].assignedTo+
+         "</td><td><a href='#' id='edit'><img height='15px' width='15px' src='https://cdn2.iconfinder.com/data/icons/windows-8-metro-style/128/edit_property.png'></a></td><td><a href='#' id='delete'><img height='15px' width='15px' src='http://vignette1.wikia.nocookie.net/shaiya/images/a/a4/Icon_Red_Cross.png/revision/latest?cb=20080319184825'></a></td></tr>";
+     }
+     out += "</tbody>";
+     $("#dataDivTable").append(out);
+
+ }
+	 $(document).on("click","#delete",function(){
+		 $(this).closest('tr').remove();
+	 });
+	 
+	 $(document).on("click","#edit",function(){
+		 var td = $(this).closest('tr').find('td');
+		 var row1 = td.eq(0).html();
+		 var row2 = td.eq(1).html();
+		 var row3 = td.eq(2).html();
+		 $("#taskName").val(row1);
+		 $("#datePick").val(row2);
+		 $("#assignedTo").val(row3);
+
+		 
+	 });
+	 $(document).on("click","#save",function(){
+		/*  var tr = $(this).parent();
+		
+	        var new_row = '<tr class="new_row"><td>3</td><td>4</td><td>Save</td></tr>'
+	        tr.replaceWith(new_row); */
+		 var nw=$(this).closest('tr').index();
+	        console.log("nw-----",nw);
+	        var nw_row="";
+	        nw_row ="<tr><td>"+$("#taskName").val()+"</td>";
+	        nw_row +="<td>"+	$("#datePick").val()+"</td>";
+	        nw_row +="<td>"+	$("#assignedTo").val()+"</td><td>";
+	        nw_row +="<a href='#' id='edit'><img height='15px' width='15px' src='https://cdn2.iconfinder.com/data/icons/windows-8-metro-style/128/edit_property.png'></a></td><td><a href='#' id='delete'><img height='15px' width='15px' src='http://vignette1.wikia.nocookie.net/shaiya/images/a/a4/Icon_Red_Cross.png/revision/latest?cb=20080319184825'></a></td></tr>";
+	       console.log("nw_row----",nw_row);
+	       $(nw).replace(nw_row);
+	 });
+	 
+	});
+	 function loadData(arr){
+		 var i;
+		    var out = "<table class='table table-striped table-bordered'>";
+		    out += "<thead><tr><th>Name</th><th>Date</th><th>Assigned To</th><th>Edit</th><th>Remove</th></tr></thead><tbody>";
+		    for(i=0;i<arr.length-1;i++){
+		    	out+="<tr><td>"+arr[i].name+"</td><td>"+arr[i].date+"</td><td>"+arr[i].assignedTo+
+		        "</td><td><a href='#' id='edit'><img height='15px' width='15px' src='https://cdn2.iconfinder.com/data/icons/windows-8-metro-style/128/edit_property.png'></a></td><td><a href='#' id='delete'><img height='15px' width='15px' src='http://vignette1.wikia.nocookie.net/shaiya/images/a/a4/Icon_Red_Cross.png/revision/latest?cb=20080319184825'></a></td></tr>";
+		    }
+		    out += "</tbody>";
+		    $("#datadiv").append(out);
+		 
+	 }
+	 function init(){
+		 $("#taskName").val("");
+		 $("#datePick").val("");
+		 $("#assignedTo").val("");
+	 }
+	 
+	 function editSave(ind){
+		 
+	dataArr.push()	 
+	 }
+	
+	</script>
+
+</body>
+</html>
